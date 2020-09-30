@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new event</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+<body>
+
+<form action="#" th:action="@{/addEvent}" th:object="${eventForm}" method="post" class="form-signin">
+    <div class="form-group row">
+
+        <input th:field="*{summary}" class="form-control" type="text" placeholder="Summary">
+        <input th:field="*{room}" class="form-control" type="text" placeholder="Room">
+
+
+        <label for="example-datetime-local-input" class="col-2 col-form-label">Starts in</label>
+        <div class="col-10">
+            <input th:field="*{startedAt}" class="form-control" type="datetime-local" value="2020-09-29T13:45:00"
+                   id="example-datetime-local-input">
+        </div>
+        <label for="example-datetime-local-input" class="col-2 col-form-label">Finish in</label>
+        <div class="col-10">
+            <input th:field="*{finishedAt}" class="form-control" type="datetime-local" value="2020-09-29T13:45:00">
+        </div>
+    </div>
+
+    <ul th:if="${#fields.hasErrors('startedAt')}" th:errors="*{startedAt}"
+        class="col-lg-4 control-label" style="color:red;"></ul>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Add event</button>
+</form>
+
+<a class="btn btn-primary" href="/table" role="button">Return to table</a>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+</html>

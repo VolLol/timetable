@@ -35,7 +35,7 @@ public class UserController {
     public String postAuth(@ModelAttribute("userForm") UserAuthForm userEntity, BindingResult bindingResult) {
         try {
             userAuthUsecase.execute(userEntity.getUsername(), userEntity.getPassword());
-            return "table";
+            return "redirect:/table";
         } catch (IncorrectUserPasswordException e) {
             bindingResult.rejectValue("username", "error.username", "Incorrect password. Try another");
             return "auth";
