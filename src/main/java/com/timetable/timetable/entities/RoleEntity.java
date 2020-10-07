@@ -1,30 +1,29 @@
 package com.timetable.timetable.entities;
 
+
 import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Builder
-@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
-
+@Entity
+@Builder
+@Table(name = "roles")
+public class RoleEntity {
     @Id
     @GeneratedValue
     @Getter
+    @Setter
     @Column(nullable = false)
     private Long id;
-    @Column(unique = true, nullable = false)
     @Getter
+    @Setter
+    @Column(nullable = false)
     private String username;
     @Getter
     @Setter
-    @Column(nullable = false)
-    private String password;
-    @Getter
-    @Setter
-    @Column(nullable = false)
-    private Boolean enabled;
+    @Column(name = "role_name", nullable = false)
+    private String roleName;
+
 }

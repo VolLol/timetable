@@ -1,70 +1,75 @@
 package com.timetable.timetable.usecases;
 
 import com.timetable.timetable.entities.EventEntity;
+import com.timetable.timetable.entities.RoomEntity;
+import com.timetable.timetable.entities.UserEntity;
 import com.timetable.timetable.exceptions.IncorrectDateException;
 import com.timetable.timetable.repositories.EventRepository;
+import com.timetable.timetable.repositories.RoomRepository;
+import com.timetable.timetable.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 @Service
 public class AddNewEventUsecase {
 
-    private Logger log = Logger.getLogger(AddNewEventUsecase.class.getName());
     private final EventRepository eventRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
 
-    public AddNewEventUsecase(EventRepository eventRepository) {
+    public AddNewEventUsecase(EventRepository eventRepository, RoomRepository roomRepository, UserRepository userRepository) {
         this.eventRepository = eventRepository;
+        this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
     }
 
 
-    public void execute(String summary, String room, String startedAt, String finishedAt) throws IncorrectDateException {
+    public void execute(String summary, String roomName, String startedAt, String finishedAt, String username) throws IncorrectDateException, DateTimeParseException {
+        try {
 
-        LocalDateTime start = LocalDateTime.parse(startedAt);
-        LocalDateTime finish = LocalDateTime.parse(finishedAt);
+            LocalDateTime start = LocalDateTime.parse(startedAt);
+            LocalDateTime finish = LocalDateTime.parse(finishedAt);
 
-        if (finish.isBefore(start)) {
-            log.info("Incorrect date");
-            throw new IncorrectDateException("Incorrect start date");
-        }
-        if (finish.minusMinutes(30L).isBefore(start)) {
-            log.info("Incorrect date");
-            throw new IncorrectDateException("Incorrect finish date. Minimum booking interval 30 minutes");
-        }
+            if (finish.isBefore(start)) {
+                throw new IncorrectDateException("Incorrect start date");
+            }
 
-        if (Duration.between(start, finish).toMinutes() > 1440) {
-            log.info("Incorrect date");
-            throw new IncorrectDateException("Incorrect date. Maximum booking interval 24 hours");
-        }
+            if (finish.minusMinutes(30L).isBefore(start)) {
+                throw new IncorrectDateException("Incorrect finish date. Minimum booking interval 30 minutes");
+            }
 
-        LocalDate startDate = LocalDate.of(start.getYear(), start.getMonth(), start.getDayOfMonth());
-        LocalTime startTime = LocalTime.of(start.getHour(), start.getMinute());
-        LocalDate finishDate = LocalDate.of(finish.getYear(), finish.getMonth(), finish.getDayOfMonth());
-        LocalTime finishTime = LocalTime.of(finish.getHour(), finish.getMinute());
+            if (Duration.between(start, finish).toMinutes() > 1440) {
+                throw new IncorrectDateException("Incorrect date. Maximum booking interval 24 hours");
+            }
 
-        Collection<EventEntity> eventsWithSameStartDateAndFinishDate = eventRepository.findAllByStartDateAndFinishDate(startDate, finishDate);
-        for (EventEntity event : eventsWithSameStartDateAndFinishDate) {
-            System.out.println(event.toString());
-            if (event.getStartTime().isBefore(startTime) && event.getFinishTime().isAfter(finishTime)) {
-                log.info("Incorrect date");
+
+            RoomEntity roomEntity = roomRepository.findByName(roomName);
+
+            UserEntity user = userRepository.findByUsername(username);
+
+            Collection<EventEntity> crossingEvents = eventRepository.findAllCrossing(start, finish, roomEntity.getId());
+            if (crossingEvents.size() == 0) {
+                EventEntity event = EventEntity.builder()
+                        .summary(summary)
+                        .userId(user.getId())
+                        .roomId(roomEntity.getId())
+                        .startAt(start)
+                        .finishAt(finish)
+                        .build();
+                eventRepository.save(event);
+            } else {
                 throw new IncorrectDateException("Incorrect date. The time on this day is already taken ");
             }
+
+        } catch (DateTimeParseException e) {
+            throw new IncorrectDateException("Incorrect date ");
         }
 
-        EventEntity event = EventEntity.builder()
-                .summary(summary)
-                .room(room)
-                .startDate(startDate)
-                .finishDate(finishDate)
-                .startTime(startTime)
-                .finishTime(finishTime)
-                .build();
-        eventRepository.save(event);
     }
+
 
 }

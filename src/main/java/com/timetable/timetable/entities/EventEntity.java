@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -20,22 +18,22 @@ public class EventEntity {
     @Id
     @GeneratedValue
     @Getter
+    @Column(nullable = false)
     private Long id;
     @Getter
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
+    @Getter
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+    @Getter
+    @Column(nullable = false)
     private String summary;
-    @Getter
-    private String room;
-    @Getter
-    @Column(name = "start_date")
-    private LocalDate startDate;
-    @Getter
-    @Column(name = "start_time")
-    private LocalTime startTime;
-    @Getter
-    @Column(name = "finish_date")
-    private LocalDate finishDate;
-    @Getter
-    @Column(name = "finish_time")
-    private LocalTime finishTime;
 
+    @Getter
+    @Column(name = "startAt", nullable = false)
+    private LocalDateTime startAt;
+    @Getter
+    @Column(name = "finishAt", nullable = false)
+    private LocalDateTime finishAt;
 }

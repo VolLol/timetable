@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Add new event</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
 <body>
@@ -12,37 +12,50 @@
 <form action="#" th:action="@{/addEvent}" th:object="${eventForm}" method="post" class="form-signin">
     <div class="form-group row">
 
-        <input th:field="*{summary}" class="form-control" type="text" placeholder="Summary">
-        <input th:field="*{room}" class="form-control" type="text" placeholder="Room">
+        <input th:field="*{summary}" class="form-control" type="text" placeholder="Summary" required="true">
 
 
-        <label for="example-datetime-local-input" class="col-2 col-form-label">Starts in</label>
-        <div class="col-10">
-            <input th:field="*{startedAt}" class="form-control" type="datetime-local" value="2020-09-29T13:45:00"
-                   id="example-datetime-local-input">
+        <div class="form-group">
+            <label>Choose room</label>
+            <select th:field="*{room}" class="form-control col-md-7 col-xs-12" required="true"/>
+            <option th:each="i : ${roomList}"
+                    th:value="${i.name}" th:text="${i.name}"
+                    th:selected="${i.name} == ${eventForm.room}">
+            </option>
+            </select>
         </div>
-        <label for="example-datetime-local-input" class="col-2 col-form-label">Finish in</label>
-        <div class="col-10">
-            <input th:field="*{finishedAt}" class="form-control" type="datetime-local" value="2020-09-29T13:45:00">
+
+        <div>
+            <label for="example-datetime-local-input" class="col-2 col-form-label">Starts in</label>
+            <div class="col-10">
+                <input th:field="*{startedAt}" class="form-control" type="datetime-local" required="true"
+                       id="example-datetime-local-input">
+            </div>
+        </div>
+        <div>
+            <label for="example-datetime-local-input" class="col-2 col-form-label">Finish in</label>
+            <div class="col-10">
+                <input th:field="*{finishedAt}" class="form-control" type="datetime-local" required="true">
+            </div>
         </div>
     </div>
 
     <ul th:if="${#fields.hasErrors('startedAt')}" th:errors="*{startedAt}"
         class="col-lg-4 control-label" style="color:red;"></ul>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Add event</button>
+    <button class="btn btn-primary" th:href="@{/rooms}" type="submit">Add event</button>
 </form>
+<a class="btn btn-primary" th:href="@{/rooms}" role="button">Back to room list</a>
 
-<a class="btn btn-primary" href="/table" role="button">Return to table</a>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
 </body>
 </html>
